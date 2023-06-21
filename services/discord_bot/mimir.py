@@ -19,7 +19,6 @@ async def on_ready():
 
 @client.command()
 async def ping(ctx):
-    """Tu en demande trop """
     await ctx.send('pong')
 
 client.run(str(os.getenv('TOKEN')))
