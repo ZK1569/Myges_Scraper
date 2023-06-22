@@ -18,14 +18,14 @@ class MongoConnect():
         userInfo = self.users.find_one({"user_id" : user_id})
         return (userInfo["email"], userInfo["password"])
 
-    def isUserSaved(self, username: str):
+    def isUserSaved(self, user_id: str):
         """
             Checks if the user exists in the database
             
             Return : 
                 type(boolean)
         """
-        userInfo = self.users.find_one({"user_id" : username})
+        userInfo = self.users.find_one({"user_id" : user_id})
         if userInfo : return True
         
         return False
@@ -40,7 +40,12 @@ class MongoConnect():
             "password" : password
         }
 
-        self.users.insert_one(user).inserted_id
+        try: 
+            self.users.insert_one(user).inserted_id
+        except:
+            return False
+
+        return True
 
 
 if __name__ == "__main__":

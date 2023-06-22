@@ -23,7 +23,7 @@ async def ping(ctx):
     await ctx.send('pong')
 
 @client.command()
-async def save(ctx, email, password):
+async def save(ctx, email=None, password=None):
     """
         Takes parameters :
             email: string
@@ -32,8 +32,10 @@ async def save(ctx, email, password):
         Saves the user's information in a database for scrapping his MyGes account.
     """
 
+    user_id = ctx.author.id
+
     # Check if the user has already saved this information 
-    if db.isUserSaved:
+    if db.isUserSaved(user_id):
         await ctx.send("Your information is already saved. If you want to change your password, you can do `!changepassword <YOUR NEW PASSWORD>`")
         return 
     
@@ -45,10 +47,7 @@ async def save(ctx, email, password):
     # Check if the email variable has an @ in it
     if not "@" in email:
         await ctx.send("I'm not strupid, this is not a valid mail ")
-
-    print("Normalement là la personne est pas connue")
-
-    user_id = ctx.author.id
+        return 
 
     isSaved = db.saveLogin(user_id, email, password)
 
@@ -56,7 +55,7 @@ async def save(ctx, email, password):
         await ctx.send("Thanks for the personal info ...")
         return
     
-    await ctx.send("I'm so stupid I couldn't save the information.")
+    await ctx.send("I'm so stupid... I couldn't save the information.")
     return
 
 @client.command()
