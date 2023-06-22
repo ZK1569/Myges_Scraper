@@ -1,9 +1,13 @@
 from pymongo import MongoClient
-from pprint import pprint
+
+import os 
+from dotenv import load_dotenv
+
+load_dotenv()
 
 class MongoConnect():
     def __init__(self):
-        client = MongoClient("mongodb://root:passwordRoot@localhost:27017/")
+        client = MongoClient(str(os.getenv('MONGO_URL')))
         self.db =  client.mimir_knowledge
         self.users = self.db.Users          # Users Collection 
 
