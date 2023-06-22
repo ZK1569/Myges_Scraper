@@ -24,6 +24,13 @@ async def ping(ctx):
 
 @client.command()
 async def save(ctx, email, password):
+    """
+        Takes parameters :
+            email: string
+            password: string
+        
+        Saves the user's information in a database for scrapping his MyGes account.
+    """
 
     # Check if the user has already saved this information 
     if db.isUserSaved:
@@ -54,6 +61,9 @@ async def save(ctx, email, password):
 
 @client.command()
 async def me(ctx):
+    """
+        Enables you to check whether the user who executes the order has his e-mail address and password saved in the database.
+    """
     user_id = ctx.author.id
     user_name = ctx.author.name
 
@@ -66,7 +76,14 @@ async def me(ctx):
     await ctx.send(message)
 
 @client.command()
-async def changepassword(ctx):
+async def changepassword(ctx, password):
+    """
+        Takes parameter :
+            password: string
+
+        This command changes the password
+    """
+
     await ctx.send("The functionality is not finished, come back later.")
 
 
