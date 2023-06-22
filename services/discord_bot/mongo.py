@@ -51,7 +51,16 @@ class MongoConnect():
 
         return True
 
-
+    def deleteLogin(self, user_id: str):
+        """
+            Deletes a user from the database 
+        """
+        try:
+            self.users.find_one_and_delete({"user_id" : user_id})
+            return True
+        except:
+            return False 
+        
 if __name__ == "__main__":
     db = MongoConnect()
     # db.saveLogin("zk1569", "test@mail.com", 'password234')

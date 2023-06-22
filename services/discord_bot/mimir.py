@@ -57,6 +57,29 @@ async def save(ctx, email=None, password=None):
     return
 
 @client.command()
+async def bye(ctx):
+    """
+        Allows you to delete your password and e-mail from the database 
+    """
+
+    user_id = ctx.author.id
+
+    # Check if the user has already saved his information 
+    if not db.isUserSaved(user_id):
+        await ctx.send("I don't know your email and password")
+        return 
+
+    # Delete informations
+    # If the response of the function is true or false 
+    if db.deleteLogin(user_id):
+        await ctx.send("Okay, I'll never use that information again")
+        return 
+
+
+    await ctx.send("I haven't been able to forget your information ")
+    return 
+
+@client.command()
 async def me(ctx):
     """
         Show your informations
