@@ -1,9 +1,12 @@
-import discord
-from discord.ext import commands
 import os 
+import mongo
+import scrap
+import discord
+
+from discord.ext import commands
 from dotenv import load_dotenv
 
-import mongo
+from time import sleep
 
 load_dotenv()
 
@@ -110,6 +113,19 @@ async def planning(ctx):
     """
         Go to MyGes to get your schedule
     """
+
+    spider = scrap.SpiderScraper()
+    await ctx.send("I'm going to look, just a moment ...")
+
+    try:
+        schedul = await spider.getPlanning()
+        await ctx.send(schedul)
+    except scrap.idOrPasswordIncorrect:
+        await ctx.send("Your password or email is incorrect")
+        return
+    except scrap.scheduleShowError:
+        await ctx.send("I can't get access to you schedule")
+        return 
 
     await ctx.send("The functionality is not finished, come back later.")
 
