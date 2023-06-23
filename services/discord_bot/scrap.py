@@ -75,14 +75,20 @@ class SpiderScraper():
             self.driver.execute_script(
                 """document.getElementById('j_idt174').style.top = '-300px'; document.getElementById('j_idt174').style.left = '0px'"""
             )
-            sleep(1)
+            sleep(2)
 
             coursInfos = self.driver.find_elements(By.ID, "dlg1")[0].find_elements(By.TAG_NAME, "tbody")
             # Shearch in coursInfos tbody
-            print(coursInfos[0].text)
             self.waitWillPageContainsClass("matiere", By.ID, 3)
-            answer.append(coursInfos[0].find_element(By.ID, "matiere").text)
-            print("-"*50)
+            lesson = {
+                "time": coursInfos[0].find_element(By.ID, "duration").text,
+                "matiere": coursInfos[0].find_element(By.ID, "matiere").text,
+                "intervenant": coursInfos[0].find_element(By.ID, "intervenant").text,
+                "classroom": coursInfos[0].find_element(By.ID, "salle").text,
+                "modality": coursInfos[0].find_element(By.ID, "modality").text,
+
+            }
+            answer.append(lesson)
 
         return answer
 

@@ -119,7 +119,7 @@ async def planning(ctx):
 
     try:
         schedul = await spider.getPlanning()
-        await ctx.send(schedul)
+        [await ctx.send(lesson) for lesson in schedul]
     except scrap.idOrPasswordIncorrect:
         await ctx.send("Your password or email is incorrect")
         return
