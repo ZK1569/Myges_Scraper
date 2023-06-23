@@ -61,9 +61,13 @@ class SpiderScraper():
             return self.schoolWeek(iteration + 1)
         
         return True
+    
+    def witchDay(self, val):
+        choose = {"60px": "Lundi", "174px":"Mardi", "287px":"Mercredi", "400px":"Jeudi", "513px":"Vendredi", "626px":"Samedi"}
+        return choose[val]
 
     def getDataSchedule(self):
-        courses = self.driver.find_elements(By.CLASS_NAME, "fc-event-inner")
+        courses = self.driver.find_elements(By.CLASS_NAME, "fc-event")
         answer = []
 
         for cours in courses:
@@ -71,16 +75,19 @@ class SpiderScraper():
 
             self.waitWillPageContainsClass("j_idt174", By.ID, 3)
             # tableNotShow = self.doPageContains("j_idt174", By.ID)
-            # mettre le style top & Opx
+
             self.driver.execute_script(
-                """document.getElementById('j_idt174').style.top = '-300px'; document.getElementById('j_idt174').style.left = '0px'"""
+                """document.getElementById('j_idt174').style.top = '0px'; document.getElementById('j_idt174').style.left = '0px'"""
             )
-            sleep(2)
+            sleep(1)
+
+            day = self.witchDay(cours.value_of_css_property('left'))
 
             coursInfos = self.driver.find_elements(By.ID, "dlg1")[0].find_elements(By.TAG_NAME, "tbody")
             # Shearch in coursInfos tbody
             self.waitWillPageContainsClass("matiere", By.ID, 3)
             lesson = {
+                "day": day,
                 "time": coursInfos[0].find_element(By.ID, "duration").text,
                 "matiere": coursInfos[0].find_element(By.ID, "matiere").text,
                 "intervenant": coursInfos[0].find_element(By.ID, "intervenant").text,
