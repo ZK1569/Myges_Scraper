@@ -13,6 +13,7 @@ class SpiderScraper():
     def __init__(self):
         self.driver = webdriver.Chrome()
         self.driver.implicitly_wait(3)
+        self.dates = None
 
     async def getPlanning(self):
         self.runPage()
@@ -62,8 +63,22 @@ class SpiderScraper():
         
         return True
     
+    def searchDate(self):
+        self.dates = self.driver.find_elements(By.CLASS_NAME, "fc-border-separate")[0].find_elements(By.CLASS_NAME, "ui-widget-header")
+    
     def witchDay(self, val):
-        choose = {"60px": "Lundi", "174px":"Mardi", "287px":"Mercredi", "400px":"Jeudi", "513px":"Vendredi", "626px":"Samedi"}
+
+        if not self.dates : self.searchDate()
+
+        print("date -> ",self.dates[1].text)
+        choose = {
+            "60px": f"Lundi {self.dates[1].text.split()[1]}", 
+            "174px":f"Mardi {self.dates[2].text.split()[1]}", 
+            "287px":f"Mercredi {self.dates[3].text.split()[1]}", 
+            "400px":f"Jeudi {self.dates[4].text.split()[1]}", 
+            "513px":f"Vendredi {self.dates[5].text.split()[1]}", 
+            "626px":f"Samedi {self.dates[6].text.split()[1]}"
+        }
         return choose[val]
 
     def getDataSchedule(self):

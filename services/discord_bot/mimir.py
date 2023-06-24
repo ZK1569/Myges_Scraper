@@ -126,6 +126,9 @@ async def planning(ctx):
     except scrap.scheduleShowError:
         await ctx.send("I can't get access to you schedule")
         return 
+    except:
+        await ctx.send("I didn't succeed, I stumbled ... ")
+        return
 
     await ctx.send("The functionality is not finished, come back later.")
 
