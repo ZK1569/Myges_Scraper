@@ -9,12 +9,18 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-class SpiderScraper():
+from scraper.scrape import Scraper
+
+class ScraperSchedule(Scraper):
+    """
+        This class extends Scrape.py
+
+        Contains all functions related to the search and processing of information found on the myges schedule.
+    """
     def __init__(self):
-        self.driver = webdriver.Chrome()
-        self.driver.implicitly_wait(3)
+
+        super().__init__("https://myges.fr/student/planning-calendar")
         self.dates = None
-        self.url = "https://myges.fr/student/planning-calendar"
 
     async def getPlanning(self, id, password):
         self.runPage()
@@ -22,40 +28,21 @@ class SpiderScraper():
 
         self.schoolWeek()
 
-        # Now its on the planning page
         schedule =  self.getDataSchedule()
 
         self.closePage()
 
         return schedule
-
-    def runPage(self):
-        self.driver.get(self.url)
-    
-    def waitWillPageContainsClass(self,text, by = By.ID, time: int = 10):
-        try:
-            WebDriverWait(self.driver, time).until(
-                EC.presence_of_element_located((by, text))
-            )
-            return True
-        
-        except:
-            return False
-        
-    def doPageContains(self, test, by = By.ID):
-        try:
-            self.driver.find_element(by, test)
-            return True
-        except:
-            return False
         
     def schoolWeek(self, iteration = 0):
+        """
+            Finds the page with the calendar, if the function loops more than 4 times returns an error scheduleShowError
+        """
 
         if(iteration > 4):
             raise scheduleShowError
 
-        if not self.waitWillPageContainsClass("reservation-NATION1", By.CLASS_NAME, 10):
-            print("NO")
+        if not self.waitWillPageContains("fc-event-vert", By.CLASS_NAME, 10):
 
             nextweek = self.driver.find_element("id", "calendar:nextMonth")
             nextweek.click()    
@@ -65,9 +52,19 @@ class SpiderScraper():
         return True
     
     def searchDate(self):
+        """
+            Retrieves the dates displayed in the table header from the planning page. 
+
+            This method can only be used if the scraper is on the planning page.
+        """
         self.dates = self.driver.find_elements(By.CLASS_NAME, "fc-border-separate")[0].find_elements(By.CLASS_NAME, "ui-widget-header")
     
     def witchDay(self, val):
+        """
+            Calculates which day of the week the course corresponds to
+
+            Takes card position y in pixels and returns day + date 
+        """
 
         if not self.dates : self.searchDate()
 
@@ -83,15 +80,21 @@ class SpiderScraper():
         return choose[val]
 
     def getDataSchedule(self):
+        """
+            Allows you to retrieve information on the planning cards and more details about them. 
+
+            Returns a dictionary list
+        """
         courses = self.driver.find_elements(By.CLASS_NAME, "fc-event")
         answer = []
 
         for cours in courses:
             cours.click()
 
-            self.waitWillPageContainsClass("j_idt174", By.ID, 3)
-            # tableNotShow = self.doPageContains("j_idt174", By.ID)
+            # Waiting for the card with the details to appear 
+            self.waitWillPageContains("j_idt174", By.ID, 3)
 
+            # replace the card to avoid a bug
             self.driver.execute_script(
                 """document.getElementById('j_idt174').style.top = '0px'; document.getElementById('j_idt174').style.left = '0px'"""
             )
@@ -101,7 +104,7 @@ class SpiderScraper():
 
             coursInfos = self.driver.find_elements(By.ID, "dlg1")[0].find_elements(By.TAG_NAME, "tbody")
             # Shearch in coursInfos tbody
-            self.waitWillPageContainsClass("matiere", By.ID, 3)
+            self.waitWillPageContains("matiere", By.ID, 3)
             lesson = {
                 "day": day,
                 "time": coursInfos[0].find_element(By.ID, "duration").text,
@@ -116,59 +119,8 @@ class SpiderScraper():
         return answer
 
 
-    def enterLogin(self, email, password):
-        """
-            Fills the id and password fields of the formulair
-        """
-
-        # Find the input and send the email
-        email_input = self.driver.find_element("id", "username")
-        email_input.send_keys(email)
-
-        # Find the input and send the password
-        password_input = self.driver.find_element("id", "password")
-        password_input.send_keys(password)
-
-
-        # Find the button and click on it
-        button = self.driver.find_element("name", "submit")
-        button.click()
-    
-    def LoginPage(self, email, password):
-        """
-            Find out if the site has been redirected to the login page
-
-            If password or login is incorrect, throws idOrPasswordIncorrect error 
-            If not return True 
-        """
-
-        # Check if the page was redirected to login page
-        if self.waitWillPageContainsClass("username"):    
-            self.enterLogin(email, password)
-        
-        # Check if the password or login is incorrect
-        if self.waitWillPageContainsClass("errors", By.CLASS_NAME, 3):
-            raise idOrPasswordIncorrect 
-        
-        # Redirect to the planning page
-        self.driver.get(self.url)
-
-
-        return True
-        
-
-    def closePage(self):
-        """
-            Close the page
-        """
-        self.driver.quit()
-    
-
-
-
-
 if __name__ == "__main__":
-    spider = SpiderScraper()
+    spider = ScraperSchedule()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(spider.getPlanning())
     print("FINISHED")

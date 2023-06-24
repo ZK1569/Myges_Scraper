@@ -1,7 +1,9 @@
 import os 
 import mongo
-import scrap
+import scraper.schedule
 import discord
+
+from CustomExceptions.scraperException import idOrPasswordIncorrect, scheduleShowError
 
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -118,22 +120,25 @@ async def planning(ctx):
         await ctx.send("PTDR T KI ?")
         return 
 
-    spider = scrap.SpiderScraper()
+    spider = scraper.schedule.ScraperSchedule()
     await ctx.send("I'm going to look, just a moment ...")
 
     try:
         print(myGesId, password)
         schedul = await spider.getPlanning(myGesId, password)
         [await ctx.send(lesson) for lesson in schedul]
-    except scrap.idOrPasswordIncorrect:
+    except idOrPasswordIncorrect:
         await ctx.send("Your password or Id is incorrect")
         return
-    except scrap.scheduleShowError:
+    except scheduleShowError:
         await ctx.send("I can't get access to you schedule")
         return 
     except:
         await ctx.send("I didn't succeed, I stumbled ... ")
         return
 
+@client.command()
+async def notes(ctx):
+    await ctx.send("This is not done yet")
 
 client.run(str(os.getenv('TOKEN')))
