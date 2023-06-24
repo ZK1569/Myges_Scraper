@@ -27,9 +27,9 @@ async def ping(ctx):
     await ctx.send('pong')
 
 @client.command()
-async def save(ctx, email=None, password=None):
+async def save(ctx, GesId=None, password=None):
     """
-        Save your mail and password
+        Save your myGes id and password
         Saves the user's information in a database for scrapping his MyGes account.
     """
 
@@ -40,17 +40,12 @@ async def save(ctx, email=None, password=None):
         await ctx.send("Your information is already saved.\nIf you want to change your password, you can do : \n`!changepassword <YOUR NEW PASSWORD>`")
         return 
     
-    # Checks that the user has sent an e-mail and password 
-    if not email or not password:
-        await ctx.send("You forgot to send me your email and password")
-        return 
-    
-    # Check if the email variable has an @ in it
-    if not "@" in email:
-        await ctx.send("I'm not strupid, this is not a valid mail ")
+    # Checks that the user has sent an id and password 
+    if not GesId or not password:
+        await ctx.send("You forgot to send me your mygGes Id and password")
         return 
 
-    isSaved = db.saveLogin(user_id, email, password)
+    isSaved = db.saveLogin(user_id, GesId, password)
 
     if(isSaved):
         await ctx.send("Thanks for the personal info ...")
@@ -62,14 +57,14 @@ async def save(ctx, email=None, password=None):
 @client.command()
 async def bye(ctx):
     """
-        Allows you to delete your password and e-mail from the database 
+        Allows you to delete your password and myGes from the database 
     """
 
     user_id = ctx.author.id
 
     # Check if the user has already saved his information 
     if not db.isUserSaved(user_id):
-        await ctx.send("I don't know your email and password")
+        await ctx.send("I don't know your myGes Id and password")
         return 
 
     # Delete informations
@@ -87,16 +82,16 @@ async def me(ctx):
     """
         Show your informations
 
-        Enables you to check whether the user who executes the order has his e-mail address and password saved in the database.
+        Enables you to check whether the user who executes the order has his myGes ID and password saved in the database.
     """
     user_id = ctx.author.id
     user_name = ctx.author.name
 
     message = f"Your are **{user_name}** and your ID is {user_id} \n \n"
     if(db.isUserSaved(user_id)):
-        message += "And I know your myges password and email"
+        message += "And I know your myges password and id"
     else:
-        message += f"I don't know your password and email \nYou can do the cmd `!save <YOUR EMAIL> <PASSWORD>`"
+        message += f"I don't know your password and myGes ID \nYou can do the cmd `!save <YOUR ID> <PASSWORD>`"
 
     await ctx.send(message)
 
@@ -114,14 +109,24 @@ async def planning(ctx):
         Go to MyGes to get your schedule
     """
 
+    userId = ctx.author.id
+    myGesId = ""
+    password = ""
+    if db.isUserSaved(userId):
+        myGesId, password = db.getUserLogin(userId)
+    else:
+        await ctx.send("PTDR T KI ?")
+        return 
+
     spider = scrap.SpiderScraper()
     await ctx.send("I'm going to look, just a moment ...")
 
     try:
-        schedul = await spider.getPlanning()
+        print(myGesId, password)
+        schedul = await spider.getPlanning(myGesId, password)
         [await ctx.send(lesson) for lesson in schedul]
     except scrap.idOrPasswordIncorrect:
-        await ctx.send("Your password or email is incorrect")
+        await ctx.send("Your password or Id is incorrect")
         return
     except scrap.scheduleShowError:
         await ctx.send("I can't get access to you schedule")
@@ -129,8 +134,6 @@ async def planning(ctx):
     except:
         await ctx.send("I didn't succeed, I stumbled ... ")
         return
-
-    await ctx.send("The functionality is not finished, come back later.")
 
 
 client.run(str(os.getenv('TOKEN')))

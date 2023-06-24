@@ -14,10 +14,11 @@ class SpiderScraper():
         self.driver = webdriver.Chrome()
         self.driver.implicitly_wait(3)
         self.dates = None
+        self.url = "https://myges.fr/student/planning-calendar"
 
-    async def getPlanning(self):
+    async def getPlanning(self, id, password):
         self.runPage()
-        self.LoginPage("cursu", "Jh6AsRRQ")
+        self.LoginPage(id, password)
 
         self.schoolWeek()
 
@@ -29,7 +30,7 @@ class SpiderScraper():
         return schedule
 
     def runPage(self):
-        self.driver.get("https://myges.fr/student/planning-calendar")
+        self.driver.get(self.url)
     
     def waitWillPageContainsClass(self,text, by = By.ID, time: int = 10):
         try:
@@ -150,7 +151,7 @@ class SpiderScraper():
             raise idOrPasswordIncorrect 
         
         # Redirect to the planning page
-        self.driver.get("https://myges.fr/student/planning-calendar")
+        self.driver.get(self.url)
 
 
         return True

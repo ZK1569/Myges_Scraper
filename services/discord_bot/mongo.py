@@ -13,14 +13,14 @@ class MongoConnect():
 
     def getUserLogin(self, user_id: str):
         """
-            Returns saved user information ( email and password )
+            Returns saved user information ( id and password )
 
             Return : 
-                type(Tuple) => idx[0] = email, 
+                type(Tuple) => idx[0] = id, 
                                idx[1] = password
         """
         userInfo = self.users.find_one({"user_id" : user_id})
-        return (userInfo["email"], userInfo["password"])
+        return (userInfo["id"], userInfo["password"])
 
     def isUserSaved(self, user_id: str):
         """
@@ -34,13 +34,13 @@ class MongoConnect():
         
         return False
 
-    def saveLogin(self, user_id: str, email: str, password: str):
+    def saveLogin(self, user_id: str, id: str, password: str):
         """ 
-            Save user information in database (username, email, password)
+            Save user information in database (username, id, password)
         """
         user = {
             "user_id" : user_id,
-            "email" : email,
+            "id" : id,
             "password" : password
         }
 
