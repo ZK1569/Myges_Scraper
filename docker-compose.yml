@@ -5,16 +5,18 @@ services:
   bot:
     build: services/discord_bot
     container_name: discord_bot
-  #   depends_on:
-  #     - mongo
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URL=mongodb://root:passwordRoot@mongo:27017/
 
 
-  # mongo:
-  #   image: mongo
-  #   restart: always
-  #   ports:
-  #     - "27017:27017"
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: root
-  #     MONGO_INITDB_ROOT_PASSWORD: passwordRoot
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: passwordRoot
   
