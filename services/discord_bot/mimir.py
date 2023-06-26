@@ -1,6 +1,9 @@
+from pprint import pprint
+
 import os 
 import mongo
 import scraper.schedule
+import scraper.grades
 import discord
 
 from CustomExceptions.scraperException import idOrPasswordIncorrect, scheduleShowError
@@ -124,7 +127,6 @@ async def planning(ctx):
     await ctx.send("I'm going to look, just a moment ...")
 
     try:
-        print(myGesId, password)
         schedul = await spider.getPlanning(myGesId, password)
         [await ctx.send(lesson) for lesson in schedul]
     except idOrPasswordIncorrect:
@@ -139,6 +141,31 @@ async def planning(ctx):
 
 @client.command()
 async def notes(ctx):
+
+    userId = ctx.author.id
+    myGesId = ""
+    password = ""
+    if db.isUserSaved(userId):
+        myGesId, password = db.getUserLogin(userId)
+    else:
+        await ctx.send("PTDR T KI ?")
+        return 
+
+    spider = scraper.grades.ScraperGrades()
+
+    try:
+        grades = await spider.getGrades(myGesId, password)
+        [await ctx.author.send(grade) for grade in grades]
+        await ctx.send("Ok it's sent")
+    except idOrPasswordIncorrect:
+        await ctx.send("Your password or Id is incorrect")
+        return
+    except Exception as err :
+        print(err)
+        await ctx.send("I didn't succeed, I stumbled ... ")
+        return
+
+
     await ctx.send("This is not done yet")
 
 client.run(str(os.getenv('TOKEN')))
