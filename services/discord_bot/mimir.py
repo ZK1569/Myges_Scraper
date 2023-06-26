@@ -5,6 +5,7 @@ import mongo
 import scraper.schedule
 import scraper.grades
 import discord
+import googleCalendar.googleCalendarApi
 
 from CustomExceptions.scraperException import idOrPasswordIncorrect, scheduleShowError
 
@@ -20,6 +21,7 @@ intents.message_content = True
 
 client = commands.Bot(command_prefix='!',intents=intents)
 db = mongo.MongoConnect()
+calendarApi = googleCalendar.googleCalendarApi.CalendarAPI()
 
 @client.event
 async def on_ready():
@@ -128,6 +130,7 @@ async def planning(ctx):
 
     try:
         schedul = await spider.getPlanning(myGesId, password)
+        calendarApi.newEvent(schedul)
         [await ctx.send(lesson) for lesson in schedul]
     except idOrPasswordIncorrect:
         await ctx.send("Your password or Id is incorrect")
