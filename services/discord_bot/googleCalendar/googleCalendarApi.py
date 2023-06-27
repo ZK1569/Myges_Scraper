@@ -16,10 +16,8 @@ class CalendarAPI:
     def __init__(self):
 
         self.CALENDATID = "9c81c7a6e3570f9e5be8dbe3cf8dab1565d21141f5d2d3dd4dc5787c7a787ac2@group.calendar.google.com"
-        """Shows basic usage of the Google Calendar API.
-        Prints the start and name of the next 10 events on the user's calendar.
-        """
         self.creds = None
+        
         # The file token.json stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
@@ -39,7 +37,16 @@ class CalendarAPI:
                 token.write(self.creds.to_json())
 
     def getDate(self, date:str, hours:str):
+        """
+            Convert date and hour from "Jeudi 29/06/23", "10:30 - 12:45" 
+                TO 
+            "2023-06-30T10:30:00+02:00
+            "2023-06-30T12:45:00+02:00
 
+            Return :
+                [0] => date_start
+                [1] => date_end
+        """
 
         day, month, year = date.split()[1].split('/')
         hour_start, hour_end = hours.split(' - ')
@@ -52,6 +59,9 @@ class CalendarAPI:
 
 
     def newEvent(self, data):
+        """
+            Create new events in the calendar
+        """
 
         try:
             service = build('calendar', 'v3', credentials=self.creds)

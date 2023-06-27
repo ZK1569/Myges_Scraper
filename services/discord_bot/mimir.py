@@ -144,6 +144,9 @@ async def planning(ctx):
 
 @client.command()
 async def notes(ctx):
+    """
+        Command to scrap notes from myGes and send data by private message
+    """
 
     userId = ctx.author.id
     myGesId = ""

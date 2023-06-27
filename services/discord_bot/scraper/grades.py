@@ -12,6 +12,9 @@ class ScraperGrades(Scraper):
         super().__init__("https://myges.fr/student/marks")
     
     async def getGrades(self, id, password):
+        """
+            Run the scraper, start it and stop it
+        """
         self.runPage()
         self.LoginPage(id, password)
 
@@ -22,6 +25,11 @@ class ScraperGrades(Scraper):
         return grades
     
     def getHeaderTable(self):
+        """
+            Get from the grades page the header of the table
+            
+            Return a Dict
+        """
 
         header = self.driver.find_element(By.ID, "marksForm:marksWidget:coursesTable_head").text.split()
 
@@ -35,6 +43,13 @@ class ScraperGrades(Scraper):
     
 
     def searchGrades(self):
+        """
+            Main function that reserch notes from the myGes page
+
+            Return an Array[dict]:
+                [0] -> Is the header witch 
+                [1:] -> Are all the grades by cours subject
+        """
         answer = [self.getHeaderTable()]
         
         gradesTable = self.driver.find_element(By.ID, "marksForm:marksWidget:coursesTable_data")
