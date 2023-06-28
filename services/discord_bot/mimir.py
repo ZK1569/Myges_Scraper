@@ -175,7 +175,11 @@ async def notes(ctx):
         return
     
 @client.command()
-async def add(ctx, date:str, *, args):
+async def add(ctx, date:str=None, *, args=None):
+
+    if not date or not args:
+        await ctx.send("Je connais pas la date ou la description")
+        return 
 
     try:
         day, month, year = date.split("/")
