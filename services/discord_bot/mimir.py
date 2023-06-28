@@ -191,7 +191,11 @@ async def add(ctx, date:str, *, args):
         await ctx.send("C'est pas save")
 
 @client.command()
-async def get(ctx, date):
+async def get(ctx, date=None):
+
+    if not date:
+        await ctx.send("T'as pas envoyer de date.")
+        return 
     
     try:
         day, month, year = date.split("/")
@@ -200,8 +204,6 @@ async def get(ctx, date):
         await ctx.send("La date est pas bonne")
         return 
     todo = db.getHomework(ctx.author.id, date)
-
-    print(todo)
 
     [await ctx.send(f"Le {str(task['date']).split()[0]} =>  **{task['description']}**") for task in todo]
     return 
