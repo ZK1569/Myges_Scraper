@@ -5,6 +5,7 @@ import mongo
 import scraper.schedule
 import scraper.grades
 import discord
+import googleCalendar.googleCalendarApi
 
 from CustomExceptions.scraperException import idOrPasswordIncorrect, scheduleShowError
 
@@ -20,6 +21,7 @@ intents.message_content = True
 
 client = commands.Bot(command_prefix='!',intents=intents)
 db = mongo.MongoConnect()
+calendarApi = googleCalendar.googleCalendarApi.CalendarAPI()
 
 @client.event
 async def on_ready():
@@ -127,8 +129,11 @@ async def planning(ctx):
     await ctx.send("I'm going to look, just a moment ...")
 
     try:
-        schedul = await spider.getPlanning(myGesId, password)
-        [await ctx.send(lesson) for lesson in schedul]
+        schedule = await spider.getPlanning(myGesId, password)
+        
+        if calendarApi.getWeekEvents(*calendarApi.intervalDateWeek(schedule)) <= 7:
+            calendarApi.newEvent(schedule)
+        [await ctx.send(lesson) for lesson in schedule]
     except idOrPasswordIncorrect:
         await ctx.send("Your password or Id is incorrect")
         return
@@ -141,6 +146,9 @@ async def planning(ctx):
 
 @client.command()
 async def notes(ctx):
+    """
+        Command to scrap notes from myGes and send data by private message
+    """
 
     userId = ctx.author.id
     myGesId = ""
@@ -164,8 +172,5 @@ async def notes(ctx):
         print(err)
         await ctx.send("I didn't succeed, I stumbled ... ")
         return
-
-
-    await ctx.send("This is not done yet")
 
 client.run(str(os.getenv('TOKEN')))

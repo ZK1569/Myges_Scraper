@@ -68,7 +68,6 @@ class ScraperSchedule(Scraper):
 
         if not self.dates : self.searchDate()
 
-        print("date -> ",self.dates[1].text)
         choose = {
             "60px": f"Lundi {self.dates[1].text.split()[1]}", 
             "174px":f"Mardi {self.dates[2].text.split()[1]}", 
