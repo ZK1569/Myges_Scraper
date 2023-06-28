@@ -177,15 +177,34 @@ async def notes(ctx):
 @client.command()
 async def add(ctx, date:str, *, args):
 
-    day, month, year = date.split("/")
-    date = datetime.datetime(int(year), int(month), int(day))
+    try:
+        day, month, year = date.split("/")
+        date = datetime.datetime(int(year), int(month), int(day))
+    except:
+        await ctx.send("La date est pas bonne")
+        return
 
     if db.addHomework(ctx.author.id ,date, args):
-        await ctx.send(f"Pour le date du {date} faire '{args}'")
+        await ctx.send("OK")
         return 
     else:
         await ctx.send("C'est pas save")
 
+@client.command()
+async def get(ctx, date):
+    
+    try:
+        day, month, year = date.split("/")
+        date = datetime.datetime(int(year), int(month), int(day))
+    except:
+        await ctx.send("La date est pas bonne")
+        return 
+    todo = db.getHomework(ctx.author.id, date)
 
+    print(todo)
+
+    [await ctx.send(f"Le {str(task['date']).split()[0]} =>  **{task['description']}**") for task in todo]
+    return 
+    
 
 client.run(str(os.getenv('TOKEN')))

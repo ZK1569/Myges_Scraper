@@ -79,6 +79,17 @@ class MongoConnect():
             return False
 
         return True 
+    
+    def getHomework(self, user_discord_id, date):
+        
+        try:
+            user_db_id = self.isUserSaved(user_discord_id)
+
+            return self.homework.find({"user_id": user_db_id['_id'], "date": date})
+
+        except Exception as e:
+            print(e)
+            return False
         
         
 if __name__ == "__main__":
