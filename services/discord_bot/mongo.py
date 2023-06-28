@@ -1,4 +1,5 @@
 from pymongo import MongoClient
+from pprint import pprint
 
 import os 
 from dotenv import load_dotenv
@@ -10,6 +11,7 @@ class MongoConnect():
         client = MongoClient(str(os.getenv('MONGO_URL')))
         self.db =  client.mimir_knowledge
         self.users = self.db.Users          # Users Collection 
+        self.homework = self.db.Homework
 
     def getUserLogin(self, user_id: str):
         """
@@ -30,7 +32,7 @@ class MongoConnect():
                 type(boolean)
         """
         userInfo = self.users.find_one({"user_id" : user_id})
-        if userInfo : return True
+        if userInfo : return userInfo
         
         return False
 
@@ -41,7 +43,7 @@ class MongoConnect():
         user = {
             "user_id" : user_id,
             "id" : id,
-            "password" : password
+            "password" : password,
         }
 
         try: 
@@ -60,6 +62,35 @@ class MongoConnect():
             return True
         except:
             return False 
+    
+    def addHomework(self,user_discord_id, date, text):
+        try:
+            user_db_id = self.isUserSaved(user_discord_id)
+
+            if user_db_id:
+                self.homework.insert_one({
+                    "user_id" : user_db_id['_id'],
+                    "date": date,
+                    "description": text
+                }).inserted_id
+            else: return False
+        except Exception as e:
+            print(e)
+            return False
+
+        return True 
+    
+    def getHomework(self, user_discord_id, date):
+        
+        try:
+            user_db_id = self.isUserSaved(user_discord_id)
+
+            return self.homework.find({"user_id": user_db_id['_id'], "date": date})
+
+        except Exception as e:
+            print(e)
+            return False
+        
         
 if __name__ == "__main__":
     db = MongoConnect()

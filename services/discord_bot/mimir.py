@@ -6,6 +6,7 @@ import scraper.schedule
 import scraper.grades
 import discord
 import googleCalendar.googleCalendarApi
+import datetime
 
 from CustomExceptions.scraperException import idOrPasswordIncorrect, scheduleShowError
 
@@ -172,5 +173,44 @@ async def notes(ctx):
         print(err)
         await ctx.send("I didn't succeed, I stumbled ... ")
         return
+    
+@client.command()
+async def add(ctx, date:str=None, *, args=None):
+
+    if not date or not args:
+        await ctx.send("Je connais pas la date ou la description")
+        return 
+
+    try:
+        day, month, year = date.split("/")
+        date = datetime.datetime(int(year), int(month), int(day))
+    except:
+        await ctx.send("La date est pas bonne")
+        return
+
+    if db.addHomework(ctx.author.id ,date, args):
+        await ctx.send("OK")
+        return 
+    else:
+        await ctx.send("C'est pas save")
+
+@client.command()
+async def get(ctx, date=None):
+
+    if not date:
+        await ctx.send("T'as pas envoyer de date.")
+        return 
+    
+    try:
+        day, month, year = date.split("/")
+        date = datetime.datetime(int(year), int(month), int(day))
+    except:
+        await ctx.send("La date est pas bonne")
+        return 
+    todo = db.getHomework(ctx.author.id, date)
+
+    [await ctx.send(f"Le {str(task['date']).split()[0]} =>  **{task['description']}**") for task in todo]
+    return 
+    
 
 client.run(str(os.getenv('TOKEN')))
