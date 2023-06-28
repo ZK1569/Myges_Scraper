@@ -1,4 +1,4 @@
-from __future__ import print_function
+from pprint import pprint
 
 import datetime
 import os.path
@@ -35,13 +35,15 @@ class CalendarAPI:
             # Save the credentials for the next run
             with open('services/discord_bot/googleCalendar/token.json', 'w') as token:
                 token.write(self.creds.to_json())
+        
+        self.service = build('calendar', 'v3', credentials=self.creds)
 
     def getDate(self, date:str, hours:str):
         """
             Convert date and hour from "Jeudi 29/06/23", "10:30 - 12:45" 
                 TO 
-            "2023-06-30T10:30:00+02:00
-            "2023-06-30T12:45:00+02:00
+            "2023-06-30T10:30:00+02:00"
+            "2023-06-30T12:45:00+02:00"
 
             Return :
                 [0] => date_start
@@ -55,7 +57,13 @@ class CalendarAPI:
         date_end = f'20{year}-{month}-{day}T{hour_end}:00+02:00'
 
         return date_start, date_end
+    
+    def intervalDateWeek(self, schedule):
 
+        date_start = self.getDate(schedule[0]["day"], schedule[0]["time"])
+        date_end = self.getDate(schedule[-1]["day"], schedule[-1]["time"])
+
+        return date_start[0], date_end[1]
 
 
     def newEvent(self, data):
@@ -63,13 +71,13 @@ class CalendarAPI:
             Create new events in the calendar
         """
 
+        print("--- Save Calendar ---")
+
         try:
-            service = build('calendar', 'v3', credentials=self.creds)
 
             for subject in data:
 
                 date_start, date_end = self.getDate(subject["day"], subject["time"])
-                print("dates -> ", date_start, date_end)
 
                 event = {
                     'summary': subject["matiere"],
@@ -85,7 +93,7 @@ class CalendarAPI:
                         'timeZone': 'Europe/Paris',
                     }
                 }
-                event = service.events().insert(calendarId=self.CALENDATID, body=event).execute()
+                event = self.service.events().insert(calendarId=self.CALENDATID, body=event).execute()
                 # print('Event created: %s' % (event.get('htmlLink')))
             return True
 
@@ -94,7 +102,25 @@ class CalendarAPI:
             print('An error occurred: %s' % error)
             return False
 
+    def getWeekEvents(self, date_start:str, date_end:str):
+        """
+            Retrieve the requested week's events
+        """
+
+        try:
+            events_result = self.service.events().list(calendarId=self.CALENDATID, timeMin=date_start, timeMax=date_end, singleEvents=True,orderBy='startTime').execute()
+
+            events = events_result.get('items', [])
+
+            print(len(events))
+
+            return len(events)
+
+        except Exception as e:
+            return 0
+
 
 if __name__ == '__main__':
+    print("---Start---")
     cal = CalendarAPI()
-    cal.newEvent("testone", "idk", "Paris 12 Erard")
+    print(cal.getWeekEvents("2023-06-26T01:00:00+02:00", "2023-06-30T19:23:00+02:00"))

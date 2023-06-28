@@ -129,9 +129,11 @@ async def planning(ctx):
     await ctx.send("I'm going to look, just a moment ...")
 
     try:
-        schedul = await spider.getPlanning(myGesId, password)
-        calendarApi.newEvent(schedul)
-        [await ctx.send(lesson) for lesson in schedul]
+        schedule = await spider.getPlanning(myGesId, password)
+        
+        if calendarApi.getWeekEvents(*calendarApi.intervalDateWeek(schedule)) <= 7:
+            calendarApi.newEvent(schedule)
+        [await ctx.send(lesson) for lesson in schedule]
     except idOrPasswordIncorrect:
         await ctx.send("Your password or Id is incorrect")
         return
@@ -170,8 +172,5 @@ async def notes(ctx):
         print(err)
         await ctx.send("I didn't succeed, I stumbled ... ")
         return
-
-
-    await ctx.send("This is not done yet")
 
 client.run(str(os.getenv('TOKEN')))
