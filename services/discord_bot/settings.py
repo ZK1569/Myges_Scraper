@@ -1,6 +1,7 @@
 import pathlib
 import os
 import logging
+import discord
 from logging.config import dictConfig
 from dotenv import load_dotenv
 
@@ -9,6 +10,7 @@ load_dotenv()
 DISCORD_API_SECRET = os.getenv("TOKEN")
 MONGO_URL = os.getenv("MONGO_URL")
 IS_CALENDAR_ENABLED_FOR_OTHERS = os.getenv("IS_CALENDAR_ENABLED_FOR_OTHERS")
+GUILDS_ID = discord.Object(id=int(os.getenv("GUILD")))
 
 BASE_DIR = pathlib.Path(__file__).parent
 

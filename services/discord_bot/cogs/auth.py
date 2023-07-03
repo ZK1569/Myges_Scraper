@@ -1,5 +1,5 @@
-from discord.ext import commands
 import mongo
+from discord.ext import commands
 
 class Auth(commands.Cog):
 
@@ -72,7 +72,7 @@ class Auth(commands.Cog):
         if(self.db.isUserSaved(user_id)):
             message += "And I know your myges password and id"
         else:
-            message += f"I don't know your password and myGes ID \nYou can do the cmd `!save <YOUR ID> <PASSWORD>`"
+            message += f"I don't know your password and myGes ID \nYou can do the cmd `!save <YOUR ID> <PASSWORD>` or `/login` for more privacy"
 
         await ctx.send(message)
 

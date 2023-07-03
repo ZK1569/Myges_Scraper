@@ -1,6 +1,7 @@
 import settings
 import discord 
 from discord.ext import commands
+from modals.loginModal import LoginModal
 
 logger = settings.logging.getLogger("bot")
 
@@ -13,6 +14,9 @@ def run():
 
     @bot.event
     async def on_ready():
+
+        bot.tree.copy_global_to(guild=settings.GUILDS_ID)
+        await bot.tree.sync(guild=settings.GUILDS_ID)
 
         # Load all the commands
         # for cmd_file in settings.CMDS_DIR.glob("*.py"):
@@ -46,6 +50,15 @@ def run():
         """
         await ctx.send("pong")
 
+
+    # Slash commands ------------------------------------------------
+    @bot.tree.command()
+    async def login(interaction: discord.Interaction):
+        login_model = LoginModal()
+        await interaction.response.send_modal(login_model)
+        
+
+    # Admin commands ------------------------------------------------
     @bot.command(hidden=True)
     @commands.is_owner()
     async def load(ctx, cog:str):
