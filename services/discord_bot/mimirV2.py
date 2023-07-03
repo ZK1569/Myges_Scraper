@@ -37,6 +37,7 @@ def run():
         else:
             await ctx.send("Something went wrong")
             logger.error(error)
+            print(error)
 
     @bot.command()
     async def ping(ctx):

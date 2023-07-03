@@ -1,7 +1,7 @@
 from time import sleep
 import asyncio
 
-from scraper.scrape import Scraper
+from service.scraper.scrape import Scraper
 from selenium.webdriver.common.by import By
 
 from pprint import pprint
@@ -72,6 +72,6 @@ class ScraperGrades(Scraper):
 
 
 if __name__ == "__main__":
-    spider = ScraperGrades
+    spider = ScraperGrades()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(spider.getPlanning())
