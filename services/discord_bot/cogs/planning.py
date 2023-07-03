@@ -34,9 +34,9 @@ class Planning(commands.Cog):
 
         try:
             schedule = await spider.getPlanning(myGesId, password)
-            # TODO: make it work
-            print(settings.IS_CALENDAR_ENABLED_FOR_OTHERS, ctx.message.author.id == "628546325046231051", ctx.message.author.id)
-            if settings.IS_CALENDAR_ENABLED_FOR_OTHERS or ctx.message.author.id == "628546325046231051":
+
+            if settings.IS_CALENDAR_ENABLED_FOR_OTHERS or ctx.author.name == "zk1569":
+                print(settings.IS_CALENDAR_ENABLED_FOR_OTHERS, ctx.author.name == "zk1569")
                 if self.calendarApi.getWeekEvents(*self.calendarApi.intervalDateWeek(schedule)) <= 7:
                     self.calendarApi.newEvent(schedule)
             [await ctx.send(lesson) for lesson in schedule]
