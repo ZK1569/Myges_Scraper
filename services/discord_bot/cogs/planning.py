@@ -1,7 +1,8 @@
+import settings
 from discord.ext import commands
 import mongo
-import scraper.schedule
-import googleCalendar.googleCalendarApi
+import service.scraper.schedule as scraper
+import service.googleCalendar.googleCalendarApi as googleCalendar
 
 from CustomExceptions.scraperException import idOrPasswordIncorrect, scheduleShowError
 
@@ -10,7 +11,7 @@ class Planning(commands.Cog):
     def __init__(self, bot): 
         self.bot = bot
         self.db = mongo.MongoConnect()
-        self.calendarApi = googleCalendar.googleCalendarApi.CalendarAPI()
+        self.calendarApi = googleCalendar.CalendarAPI()
 
     
     @commands.command()
@@ -28,14 +29,16 @@ class Planning(commands.Cog):
             await ctx.send("PTDR T KI ?")
             return 
 
-        spider = scraper.schedule.ScraperSchedule()
+        spider = scraper.ScraperSchedule()
         await ctx.send("I'm going to look, just a moment ...")
 
         try:
             schedule = await spider.getPlanning(myGesId, password)
-            
-            if self.calendarApi.getWeekEvents(*self.calendarApi.intervalDateWeek(schedule)) <= 7:
-                self.calendarApi.newEvent(schedule)
+            # TODO: make it work
+            print(settings.IS_CALENDAR_ENABLED_FOR_OTHERS, ctx.message.author.id == "628546325046231051", ctx.message.author.id)
+            if settings.IS_CALENDAR_ENABLED_FOR_OTHERS or ctx.message.author.id == "628546325046231051":
+                if self.calendarApi.getWeekEvents(*self.calendarApi.intervalDateWeek(schedule)) <= 7:
+                    self.calendarApi.newEvent(schedule)
             [await ctx.send(lesson) for lesson in schedule]
         except idOrPasswordIncorrect:
             await ctx.send("Your password or Id is incorrect")

@@ -2,8 +2,6 @@ import settings
 import discord 
 from discord.ext import commands
 
-from cogs.homework import HomeWork
-
 logger = settings.logging.getLogger("bot")
 
 def run():
