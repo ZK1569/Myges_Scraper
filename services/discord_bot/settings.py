@@ -32,45 +32,45 @@ COGS_DIR = BASE_DIR / "cogs"
 
 LOGGING_CONFIG = {
     "version": 1,
-    "disable_existing_loggers": False,
+    "disabled_existing_loggers": True,
     "formatters": {
         "verbose": {
-            "format": "%(levelname)-10s - %(asctime)s - %(module)-15s : %(message)s"
+            "format": "%(asctime)s %(levelname)-10s - %(module)-15s => %(message)s"
         },
-        "strandard": {
-            "format": "%(levelname)-10s - %(name)s : %(message)s"
-        }
+        "standard": {
+            "format": "%(levelname)-10s %(name)-15s : %(message)s"
+        },
     },
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
-            'formatter': 'strandard'
+            "formatter": "standard",
         },
         "console2": {
             "level": "WARNING",
             "class": "logging.StreamHandler",
-            'formatter': 'simple'
+            "formatter": "standard",
         },
         "file": {
             "level": "INFO",
-            "class": "logging.StreamHandler",
-            "filename": "logs/infos.log",
+            "class": "logging.FileHandler",
+            "filename": "services/discord_bot/logs/infos.log",
             "mode": "w",
-            "formatter": "verbose"
-        }
+            "formatter": "verbose",
+        },
     },
     "loggers": {
         "bot": {
-            "handlers": ["console"],
-            "level": "INFO",
-            "propagate": False
-        },
+            "handlers": ["console", "file"], 
+            "level": "INFO", 
+            "propagate": False},
         "discord": {
             "handlers": ["console2", "file"],
             "level": "INFO",
-            "propagate": False
+            "propagate": False,
         },
-
-    }
+    },
 }
+
+dictConfig(LOGGING_CONFIG)

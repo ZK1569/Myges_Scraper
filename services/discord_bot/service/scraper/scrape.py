@@ -8,7 +8,7 @@ import settings
 
 from CustomExceptions.scraperException import idOrPasswordIncorrect
 
-logger = settings.logging.getLogger("Scraper")
+logger = settings.logging.getLogger("bot")
 
 class Scraper:
     def __init__(self, url):

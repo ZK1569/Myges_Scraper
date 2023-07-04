@@ -19,7 +19,7 @@ from Models.oneDayModel import oneDay
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
-logger = settings.logging.getLogger("Google Api")
+logger = settings.logging.getLogger("bot")
 
 class CalendarAPI:
     def __init__(self):

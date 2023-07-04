@@ -8,7 +8,7 @@ from discord.ext import commands, tasks
 
 
 
-logger = settings.logging.getLogger(__name__)
+logger = settings.logging.getLogger("bot")
 time = datetime.time(hour=11, minute=52, tzinfo=datetime.timezone.utc)
 
 class AutoRun(commands.Cog):

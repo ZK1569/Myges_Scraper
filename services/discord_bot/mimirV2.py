@@ -3,7 +3,7 @@ import discord
 from discord.ext import commands
 from modals.loginModal import LoginModal
 
-logger = settings.logging.getLogger("Bot")
+logger = settings.logging.getLogger("bot")
 
 def run():
     intents = discord.Intents.default()
