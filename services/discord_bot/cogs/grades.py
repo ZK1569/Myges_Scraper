@@ -2,7 +2,9 @@ import discord
 import mongo
 
 from discord.ext import commands
+from Models.displayGrades import DisplayGrades
 import service.scraper.grades as scraper
+
 
 from CustomExceptions.scraperException import idOrPasswordIncorrect, scheduleShowError
 
@@ -33,12 +35,13 @@ class Grades(commands.Cog):
 
         try:
             grades = await spider.getGrades(myGesId, password)
-            [await ctx.author.send(grade) for grade in grades]
+            [await ctx.author.send(grade) for grade in DisplayGrades.displayGrades(grades)]
             await ctx.send("Ok it's sent")
         except idOrPasswordIncorrect:
             await ctx.send("Your password or Id is incorrect")
             return
         except Exception as err :
+            print(err)
             await ctx.send("I didn't succeed, I stumbled ... ")
             return
         
