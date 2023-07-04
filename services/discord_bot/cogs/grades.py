@@ -39,7 +39,6 @@ class Grades(commands.Cog):
             await ctx.send("Your password or Id is incorrect")
             return
         except Exception as err :
-            print(err)
             await ctx.send("I didn't succeed, I stumbled ... ")
             return
         

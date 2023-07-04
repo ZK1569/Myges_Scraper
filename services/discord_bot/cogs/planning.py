@@ -37,10 +37,9 @@ class Planning(commands.Cog):
             schedule = await spider.getPlanning(myGesId, password)
 
             if settings.IS_CALENDAR_ENABLED_FOR_OTHERS or ctx.author.name == "zk1569":
-                print(settings.IS_CALENDAR_ENABLED_FOR_OTHERS, ctx.author.name == "zk1569")
                 if self.calendarApi.getWeekEvents(*self.calendarApi.intervalDateWeek(schedule)) <= 7:
                     self.calendarApi.newEvent(schedule)
-            [await ctx.send(lesson) for lesson in schedule]
+            [await ctx.send(lesson) for lesson in DisplayShedul.one_week_display(schedule)]
         except idOrPasswordIncorrect:
             await ctx.send("Your password or Id is incorrect")
             return

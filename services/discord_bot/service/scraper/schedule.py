@@ -1,6 +1,7 @@
 from time import sleep
 import datetime
 import asyncio
+from typing import List
 
 from CustomExceptions.scraperException import idOrPasswordIncorrect, scheduleShowError
 
@@ -10,6 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from service.scraper.scrape import Scraper
+from Models.oneWeekModel import oneWeekModel
 
 class ScraperSchedule(Scraper):
     """
@@ -78,7 +80,7 @@ class ScraperSchedule(Scraper):
         }
         return choose[val]
 
-    def getDataSchedule(self):
+    def getDataSchedule(self)->List[oneWeekModel]:
         """
             Allows you to retrieve information on the planning cards and more details about them. 
 
@@ -104,15 +106,16 @@ class ScraperSchedule(Scraper):
             coursInfos = self.driver.find_elements(By.ID, "dlg1")[0].find_elements(By.TAG_NAME, "tbody")
             # Shearch in coursInfos tbody
             self.waitWillPageContains("matiere", By.ID, 3)
-            lesson = {
-                "day": day,
-                "time": coursInfos[0].find_element(By.ID, "duration").text,
-                "matiere": coursInfos[0].find_element(By.ID, "matiere").text,
-                "intervenant": coursInfos[0].find_element(By.ID, "intervenant").text,
-                "classroom": coursInfos[0].find_element(By.ID, "salle").text,
-                "modality": coursInfos[0].find_element(By.ID, "modality").text,
 
-            }
+            lesson = oneWeekModel(
+                day, 
+                coursInfos[0].find_element(By.ID, "duration").text,
+                coursInfos[0].find_element(By.ID, "matiere").text,
+                coursInfos[0].find_element(By.ID, "intervenant").text,
+                coursInfos[0].find_element(By.ID, "salle").text,
+                coursInfos[0].find_element(By.ID, "modality").text
+            )
+
             answer.append(lesson)
 
         return answer

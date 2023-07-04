@@ -75,7 +75,6 @@ class MongoConnect():
                 }).inserted_id
             else: return False
         except Exception as e:
-            print(e)
             return False
 
         return True 
@@ -88,7 +87,6 @@ class MongoConnect():
             return self.homework.find({"user_id": user_db_id['_id'], "date": date})
 
         except Exception as e:
-            print(e)
             return False
         
         

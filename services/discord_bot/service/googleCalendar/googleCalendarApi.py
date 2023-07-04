@@ -4,6 +4,11 @@ from typing import List
 import os.path
 import datetime
 
+from typing import List 
+from Models.oneWeekModel import oneWeekModel
+
+import settings
+
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
@@ -14,6 +19,7 @@ from Models.oneDayModel import oneDay
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
+logger = settings.logging.getLogger("Google Api")
 
 class CalendarAPI:
     def __init__(self):
@@ -61,31 +67,31 @@ class CalendarAPI:
 
         return date_start, date_end
     
-    def intervalDateWeek(self, schedule):
+    def intervalDateWeek(self, schedule:List[oneWeekModel]):
 
-        date_start = self.getDate(schedule[0]["day"], schedule[0]["time"])
-        date_end = self.getDate(schedule[-1]["day"], schedule[-1]["time"])
+        date_start = self.getDate(schedule[0].day, schedule[0].time)
+        date_end = self.getDate(schedule[-1].day, schedule[-1].time)
 
         return date_start[0], date_end[1]
 
 
-    def newEvent(self, data):
+    def newEvent(self, data:List[oneWeekModel]):
         """
             Create new events in the calendar
         """
 
-        print("--- Save Calendar ---")
+        logger.info("Save Calendar")
 
         try:
 
             for subject in data:
 
-                date_start, date_end = self.getDate(subject["day"], subject["time"])
+                date_start, date_end = self.getDate(subject.day, subject.time)
 
                 event = {
-                    'summary': subject["matiere"],
-                    'location': subject["classroom"],
-                    'description': f'{subject["intervenant"]} - {subject["modality"]}',
+                    'summary': subject.couse,
+                    'location': subject.classroom,
+                    'description': f'{subject.teacher} - {subject.modality}',
                     'start': {
                         'dateTime': date_start,
                         # 'dateTime': '2023-06-30T10:45:00+02:00',
@@ -97,12 +103,11 @@ class CalendarAPI:
                     }
                 }
                 event = self.service.events().insert(calendarId=self.CALENDATID, body=event).execute()
-                # print('Event created: %s' % (event.get('htmlLink')))
             return True
 
 
         except HttpError as error:
-            print('An error occurred: %s' % error)
+            logger.error(error)
             return False
 
     def getWeekEvents(self, date_start:str, date_end:str):
@@ -114,8 +119,6 @@ class CalendarAPI:
             events_result = self.service.events().list(calendarId=self.CALENDATID, timeMin=date_start, timeMax=date_end, singleEvents=True,orderBy='startTime').execute()
 
             events = events_result.get('items', [])
-
-            print(len(events))
 
             return len(events)
 
