@@ -3,6 +3,7 @@ from discord.ext import commands
 import mongo
 import service.scraper.schedule as scraper
 import service.googleCalendar.googleCalendarApi as googleCalendar
+from  Models.displayDays import DisplayShedul
 
 from CustomExceptions.scraperException import idOrPasswordIncorrect, scheduleShowError
 
@@ -55,9 +56,8 @@ class Planning(commands.Cog):
         """
 
         """
-
         cours = self.calendarApi.getTodayEvents()
-        [await ctx.send(lesson) for lesson in cours]
+        [await ctx.send(lesson) for lesson in DisplayShedul.one_day_display(cours)]
 
 async def setup(bot):
     await bot.add_cog(Planning(bot))

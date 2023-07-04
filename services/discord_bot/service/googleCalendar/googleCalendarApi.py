@@ -1,4 +1,5 @@
 from pprint import pprint
+from typing import List
 
 import os.path
 import datetime
@@ -8,6 +9,8 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+
+from Models.oneDayModel import oneDay
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
@@ -119,7 +122,7 @@ class CalendarAPI:
         except Exception as e:
             return 0
         
-    def getTodayEvents(self):
+    def getTodayEvents(self)->List[oneDay]:
         now = datetime.datetime.utcnow()
         start_of_day = datetime.datetime(now.year, now.month, now.day)
         end_of_day = start_of_day + datetime.timedelta(days=1)
@@ -152,15 +155,16 @@ class CalendarAPI:
             
             description = event.get('description', 'Aucune description disponible')
             summary = event.get('summary', 'Aucun résumé disponible')
-            location = event.get('location', 'Aucun emplacement disponible')
+            location = event.get('location', 'Aucune classe')
 
-            lesson = {
-                "day_start": start_formatted,
-                "date_end" : end_formatted,
-                "matiere"  : summary,
-                "intervenant" : description,
-                "classroom" : location
-            }
+            lesson = oneDay(
+                start_formatted,
+                end_formatted,
+                summary,
+                description,
+                location
+            )
+
             lessons.append(lesson)
 
         return lessons
