@@ -50,5 +50,14 @@ class Planning(commands.Cog):
             await ctx.send("I didn't succeed, I stumbled ... ")
             return
         
+    @commands.command()
+    async def today(self, ctx):
+        """
+
+        """
+
+        cours = self.calendarApi.getTodayEvents()
+        [await ctx.send(lesson) for lesson in cours]
+
 async def setup(bot):
     await bot.add_cog(Planning(bot))

@@ -1,6 +1,7 @@
 from pprint import pprint
 
 import os.path
+import datetime
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -103,7 +104,7 @@ class CalendarAPI:
 
     def getWeekEvents(self, date_start:str, date_end:str):
         """
-            Retrieve the requested week's events
+            Retrieve the number of requested week's events
         """
 
         try:
@@ -117,6 +118,54 @@ class CalendarAPI:
 
         except Exception as e:
             return 0
+        
+    def getTodayEvents(self):
+        now = datetime.datetime.utcnow()
+        start_of_day = datetime.datetime(now.year, now.month, now.day)
+        end_of_day = start_of_day + datetime.timedelta(days=1)
+
+        events_result = self.service.events().list(
+            calendarId=self.CALENDATID,
+            timeMin=start_of_day.strftime('%Y-%m-%dT%H:%M:%S+02:00'),
+            timeMax=end_of_day.strftime('%Y-%m-%dT%H:%M:%S+02:00'),
+            singleEvents=True,
+            orderBy='startTime'
+        ).execute()
+
+        events = events_result.get('items', [])
+
+        lessons = []
+        if not events:
+            return lessons
+
+        for event in events:
+            start = event['start'].get('dateTime', event['start'].get('date'))
+            end = event['end'].get('dateTime', event['end'].get('date'))
+            
+            # Convertir les dates en objets datetime
+            start_dt = datetime.datetime.strptime(start, '%Y-%m-%dT%H:%M:%S%z')
+            end_dt = datetime.datetime.strptime(end, '%Y-%m-%dT%H:%M:%S%z')
+            
+            # Formater les dates et heures au format souhaité
+            start_formatted = start_dt.strftime('%Y-%m-%d %H:%M:%S')
+            end_formatted = end_dt.strftime('%Y-%m-%d %H:%M:%S')
+            
+            description = event.get('description', 'Aucune description disponible')
+            summary = event.get('summary', 'Aucun résumé disponible')
+            location = event.get('location', 'Aucun emplacement disponible')
+
+            lesson = {
+                "day_start": start_formatted,
+                "date_end" : end_formatted,
+                "matiere"  : summary,
+                "intervenant" : description,
+                "classroom" : location
+            }
+            lessons.append(lesson)
+
+        return lessons
+
+
 
 
 if __name__ == '__main__':
