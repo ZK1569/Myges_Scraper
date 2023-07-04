@@ -1,9 +1,9 @@
 from time import sleep
-import datetime
 import asyncio
 from typing import List
+import settings
 
-from CustomExceptions.scraperException import idOrPasswordIncorrect, scheduleShowError
+from CustomExceptions.scraperException import scheduleShowError
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -21,7 +21,7 @@ class ScraperSchedule(Scraper):
     """
     def __init__(self):
 
-        super().__init__("https://myges.fr/student/planning-calendar")
+        super().__init__(settings.URL_SCHEDULE)
         self.dates = None
 
     async def getPlanning(self, id, password):

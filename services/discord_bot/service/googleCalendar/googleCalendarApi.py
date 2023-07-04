@@ -24,7 +24,7 @@ logger = settings.logging.getLogger("Google Api")
 class CalendarAPI:
     def __init__(self):
 
-        self.CALENDATID = "9c81c7a6e3570f9e5be8dbe3cf8dab1565d21141f5d2d3dd4dc5787c7a787ac2@group.calendar.google.com"
+        self.CALENDATID = settings.CALENDAR
         self.creds = None
         
         # The file token.json stores the user's access and refresh tokens, and is

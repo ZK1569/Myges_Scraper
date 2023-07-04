@@ -1,6 +1,7 @@
 from time import sleep
 import asyncio
 
+import settings
 from service.scraper.scrape import Scraper
 from selenium.webdriver.common.by import By
 
@@ -10,7 +11,7 @@ from Models.gradesModel import GradesModel
 class ScraperGrades(Scraper):
     
     def __init__(self):
-        super().__init__("https://myges.fr/student/marks")
+        super().__init__(settings.URL_GRADES)
     
     async def getGrades(self, id, password):
         """

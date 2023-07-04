@@ -7,17 +7,28 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-DISCORD_API_SECRET = os.getenv("TOKEN")
+# Docker -------------------------------------------------------------------
 MONGO_URL = os.getenv("MONGO_URL")
-IS_CALENDAR_ENABLED_FOR_OTHERS = os.getenv("IS_CALENDAR_ENABLED_FOR_OTHERS")
+
+# Discrord -----------------------------------------------------------------
+DISCORD_API_SECRET = os.getenv("TOKEN")
 GUILDS_ID = discord.Object(id=int(os.getenv("GUILD")))
-CHANNEL_ID = discord.Object(id=int(os.getenv("CHANNEL"))-2)
 HOURE_START = int(os.getenv("HOURE"))
+CHANNEL_ID = discord.Object(id=int(os.getenv("CHANNEL"))-2)
 
+# Sraper -------------------------------------------------------------------
+IS_CALENDAR_ENABLED_FOR_OTHERS = os.getenv("IS_CALENDAR_ENABLED_FOR_OTHERS")
+CALENDAR = os.getenv("CALENDAR")
+URL_SCHEDULE = os.getenv("URL_SCHEDULE")
+URL_GRADES = os.getenv("URL_GRADES")
+URL_CALENDAR = os.getenv("URL_GRADES")
+
+# Others -------------------------------------------------------------------
 BASE_DIR = pathlib.Path(__file__).parent
-
 CMDS_DIR = BASE_DIR / "cmds" 
 COGS_DIR = BASE_DIR / "cogs" 
+
+# Logs ---------------------------------------------------------------------
 
 LOGGING_CONFIG = {
     "version": 1,

@@ -1,7 +1,7 @@
 import settings
 import discord 
 from discord.ext import commands
-from Modals.LoginModal import LoginModal
+from modals.loginModal import LoginModal
 
 logger = settings.logging.getLogger("Bot")
 
@@ -17,11 +17,6 @@ def run():
 
         bot.tree.copy_global_to(guild=settings.GUILDS_ID)
         await bot.tree.sync(guild=settings.GUILDS_ID)
-
-        # Load all the commands (for the moment there is no commands)
-        # for cmd_file in settings.CMDS_DIR.glob("*.py"):
-        #     if cmd_file.name != "__init__.py":
-        #         await bot.load_extension(f"cmds.{cmd_file.name[:-3]}")
 
         # Load all the cogs
         for cog_file in settings.COGS_DIR.glob("*.py"):
