@@ -1,9 +1,12 @@
+import settings
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from CustomExceptions.scraperException import idOrPasswordIncorrect
+
+logger = settings.logging.getLogger("Scraper")
 
 class Scraper:
     def __init__(self, url):
@@ -12,7 +15,7 @@ class Scraper:
         self.url = url
 
     def runPage(self):
-        print(self.url)
+        logger.info(f"Go on page {self.url}")
         self.driver.get(self.url)
 
     def waitWillPageContains(self,text, by = By.ID, time: int = 10):
