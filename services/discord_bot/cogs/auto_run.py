@@ -9,10 +9,10 @@ from discord.ext import commands, tasks
 
 
 logger = settings.logging.getLogger(__name__)
-time = datetime.time(hour=9, minute=55, tzinfo=datetime.timezone.utc)
+time = datetime.time(hour=11, minute=52, tzinfo=datetime.timezone.utc)
 
 class AutoRun(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: discord.Guild):
         self.bot = bot
         self.dailyPlanning.start()
         self.calendarApi = googleCalendar.CalendarAPI()
@@ -24,8 +24,8 @@ class AutoRun(commands.Cog):
     async def dailyPlanning(self):
         # TODO: Get every day scredule from google calendar
         answer = self.calendarApi.getTodayEvents()
-        pprint(answer)
-
+        # This is not working
+        # [await channel.send(cours) for cours in answer]
     
 
 async def setup(bot):

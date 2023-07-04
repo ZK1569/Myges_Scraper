@@ -11,6 +11,8 @@ DISCORD_API_SECRET = os.getenv("TOKEN")
 MONGO_URL = os.getenv("MONGO_URL")
 IS_CALENDAR_ENABLED_FOR_OTHERS = os.getenv("IS_CALENDAR_ENABLED_FOR_OTHERS")
 GUILDS_ID = discord.Object(id=int(os.getenv("GUILD")))
+CHANNEL_ID = discord.Object(id=int(os.getenv("CHANNEL"))-2)
+HOURE_START = int(os.getenv("HOURE"))
 
 BASE_DIR = pathlib.Path(__file__).parent
 
