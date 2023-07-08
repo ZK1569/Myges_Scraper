@@ -4,6 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 import settings
 
 from CustomExceptions.scraperException import idOrPasswordIncorrect
@@ -12,7 +14,12 @@ logger = settings.logging.getLogger("bot")
 
 class Scraper:
     def __init__(self, url):
-        self.driver = webdriver.Chrome()
+        options = webdriver.ChromeOptions()
+        options.add_argument("--headless")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+        self.driver = webdriver.Chrome(options=options)
         self.driver.implicitly_wait(3)
         self.url = url
 

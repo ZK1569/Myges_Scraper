@@ -31,18 +31,18 @@ class CalendarAPI:
         # created automatically when the authorization flow completes for the first
         # time.
 
-        if os.path.exists('services/discord_bot/service/googleCalendar/token.json'):
-            self.creds = Credentials.from_authorized_user_file('services/discord_bot/service/googleCalendar/token.json', SCOPES)
+        if os.path.exists(f'{settings.GOOGLECREDENTIALS}/token.json'):
+            self.creds = Credentials.from_authorized_user_file(f'{settings.GOOGLECREDENTIALS}/token.json', SCOPES)
         # If there are no (valid) credentials available, let the user log in.
         if not self.creds or not self.creds.valid:
             if self.creds and self.creds.expired and self.creds.refresh_token:
                 self.creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    'services/discord_bot/service/googleCalendar/credentials.json', SCOPES)
+                    f'{settings.GOOGLECREDENTIALS}/credentials.json', SCOPES)
                 self.creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
-            with open('services/discord_bot/service/googleCalendar/token.json', 'w') as token:
+            with open(f'{settings.GOOGLECREDENTIALS}/token.json', 'w') as token:
                 token.write(self.creds.to_json())
         
         self.service = build('calendar', 'v3', credentials=self.creds)

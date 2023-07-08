@@ -30,6 +30,8 @@ class Grades(commands.Cog):
         else:
             await ctx.send("PTDR T KI ?")
             return 
+        
+        await ctx.send("Ok, I'll take a look ...")
 
         spider = scraper.ScraperGrades()
 

@@ -7,8 +7,12 @@ services:
     container_name: discord_bot
     depends_on:
       - mongo
+    env_file:
+      - services/discord_bot/.env
     environment:
       - MONGO_URL=mongodb://root:passwordRoot@mongo:27017/
+      - LOGS=logs/infos.log
+      - GOOGLECREDENTIALS=service/googleCalendar
 
 
   mongo:

@@ -28,6 +28,10 @@ BASE_DIR = pathlib.Path(__file__).parent
 CMDS_DIR = BASE_DIR / "cmds" 
 COGS_DIR = BASE_DIR / "cogs" 
 
+# Files --------------------------------------------------------------------
+LOGS = os.getenv("LOGS")
+GOOGLECREDENTIALS = os.getenv("GOOGLECREDENTIALS")
+
 # Logs ---------------------------------------------------------------------
 
 LOGGING_CONFIG = {
@@ -55,7 +59,7 @@ LOGGING_CONFIG = {
         "file": {
             "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": "services/discord_bot/logs/infos.log",
+            "filename": LOGS,
             "mode": "w",
             "formatter": "verbose",
         },

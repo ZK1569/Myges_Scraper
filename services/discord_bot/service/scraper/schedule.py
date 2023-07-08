@@ -91,13 +91,12 @@ class ScraperSchedule(Scraper):
 
         for cours in courses:
             cours.click()
-
             # Waiting for the card with the details to appear 
-            self.waitWillPageContains("j_idt174", By.ID, 3)
+            self.waitWillPageContains("j_idt176", By.ID, 3)
 
             # replace the card to avoid a bug
             self.driver.execute_script(
-                """document.getElementById('j_idt174').style.top = '0px'; document.getElementById('j_idt174').style.left = '0px'"""
+                """document.getElementById('j_idt176').style.top = '-600px'; document.getElementById('j_idt176').style.left = '0px'"""
             )
             sleep(1)
 

@@ -14,9 +14,6 @@ credentials.json
 # C extensions
 *.so
 
-# Logs
-*.log
-
 # Distribution / packaging
 .Python
 build/

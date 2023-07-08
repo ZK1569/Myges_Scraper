@@ -6,4 +6,4 @@ ADD . .
 
 RUN pip install -r requirements.txt
 
-CMD ["python", "mimir.py"]
+CMD ["python", "mimirV2.py"]
