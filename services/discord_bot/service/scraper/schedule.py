@@ -96,7 +96,7 @@ class ScraperSchedule(Scraper):
 
             # replace the card to avoid a bug
             self.driver.execute_script(
-                """document.getElementById('j_idt176').style.top = '-600px'; document.getElementById('j_idt176').style.left = '0px'"""
+                """document.getElementById('j_idt176').style.top = '-200px'; document.getElementById('j_idt176').style.left = '0px'"""
             )
             sleep(1)
 

@@ -7,6 +7,8 @@ from  Models.displayDays import DisplayShedul
 
 from CustomExceptions.scraperException import idOrPasswordIncorrect, scheduleShowError
 
+logger = settings.logging.getLogger("bot")
+
 class Planning(commands.Cog):
 
     def __init__(self, bot): 
@@ -46,7 +48,8 @@ class Planning(commands.Cog):
         except scheduleShowError:
             await ctx.send("I can't get access to you schedule")
             return 
-        except:
+        except Exception as e:
+            logger.error(e)
             await ctx.send("I didn't succeed, I stumbled ... ")
             return
         
