@@ -1,5 +1,8 @@
 from pymongo import MongoClient
 from pprint import pprint
+from typing import List
+
+from Models.studentModel import Student
 
 import os 
 from dotenv import load_dotenv
@@ -12,6 +15,7 @@ class MongoConnect():
         self.db =  client.mimir_knowledge
         self.users = self.db.Users          # Users Collection 
         self.homework = self.db.Homework
+        self.students = self.db.Students
 
     def getUserLogin(self, user_id: str):
         """
@@ -86,6 +90,54 @@ class MongoConnect():
 
             return self.homework.find({"user_id": user_db_id['_id'], "date": date})
 
+        except Exception as e:
+            return False
+        
+    def areStudentsSaved(self):
+
+        nbr_student = self.students.count_documents({})
+
+        return True if nbr_student > 0 else False
+    
+    def getAllStudents(self) -> List[Student]:
+        students = []
+        try:
+            db_students = self.students.find({})
+            for student in db_students:
+                students.append(Student(
+                    student["image"],
+                    student["first_name"],
+                    student["last_name"]
+                ))
+            return students
+        except Exception as e:
+            return False
+    
+    def findStudent(self, name):
+
+        try:
+            student = self.students.find_one({
+                "$or": [
+                    {"first_name": name.upper()},
+                    {"last_name": name.upper()}
+                ]
+            })
+            return Student(student['image'], student['first_name'], student['last_name'])
+        except:
+            return False
+
+        
+    def saveStudents(self, students:List[Student]):
+
+        if self.areStudentsSaved(): return True
+        try:
+            for student in students:
+                self.students.insert_one({
+                    "image" : student.image,
+                    "first_name" : str.upper(student.first_name),
+                    "last_name" : str.upper(student.last_name)
+                })
+            return True
         except Exception as e:
             return False
         

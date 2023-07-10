@@ -22,15 +22,20 @@ CALENDAR = os.getenv("CALENDAR")
 URL_SCHEDULE = os.getenv("URL_SCHEDULE")
 URL_GRADES = os.getenv("URL_GRADES")
 URL_CALENDAR = os.getenv("URL_GRADES")
+URL_TROMBINOSCOPE = os.getenv("URL_TROMBINOSCOPE")
 
 # Others -------------------------------------------------------------------
 BASE_DIR = pathlib.Path(__file__).parent
-CMDS_DIR = BASE_DIR / "cmds" 
+CMDS_DIR = BASE_DIR / "cmds"
 COGS_DIR = BASE_DIR / "cogs" 
 
 # Files --------------------------------------------------------------------
 LOGS = os.getenv("LOGS")
 GOOGLECREDENTIALS = os.getenv("GOOGLECREDENTIALS")
+
+# Default User -------------------------------------------------------------
+DEFAULT_USER_NAME = os.getenv("DEFAULT_USER")
+DEFAULT_PASSWORD = os.getenv("DEFAULT_PASSWORD")
 
 # Logs ---------------------------------------------------------------------
 
