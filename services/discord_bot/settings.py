@@ -14,7 +14,7 @@ MONGO_URL = os.getenv("MONGO_URL")
 DISCORD_API_SECRET = os.getenv("TOKEN")
 GUILDS_ID = discord.Object(id=int(os.getenv("GUILD")))
 HOURE_START = int(os.getenv("HOURE"))
-CHANNEL_ID = discord.Object(id=int(os.getenv("CHANNEL"))-2)
+CHANNEL_ID = int(os.getenv("CHANNEL"))
 
 # Sraper -------------------------------------------------------------------
 IS_CALENDAR_ENABLED_FOR_OTHERS = os.getenv("IS_CALENDAR_ENABLED_FOR_OTHERS")
