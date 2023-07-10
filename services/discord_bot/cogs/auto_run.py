@@ -9,7 +9,7 @@ from discord.ext import commands, tasks
 
 
 logger = settings.logging.getLogger("bot")
-time = datetime.time(hour=11, minute=52, tzinfo=datetime.timezone.utc)
+time = datetime.time(hour=9, minute=0, tzinfo=datetime.timezone.utc)
 
 class AutoRun(commands.Cog):
     def __init__(self, bot: discord.Guild):
@@ -22,10 +22,15 @@ class AutoRun(commands.Cog):
 
     @tasks.loop(time=time)
     async def dailyPlanning(self):
-        # TODO: Get every day scredule from google calendar
+        """
+            Displays the day's courses, if any, every morning
+        """
         answer = self.calendarApi.getTodayEvents()
-        # This is not working
-        # [await channel.send(cours) for cours in answer]
+        if answer == []:
+            return 
+        chanel = self.bot.get_channel(settings.CHANNEL_ID)
+        [await chanel.send(f"{lesson.date_start.split()[1]}-{lesson.date_end.split()[1]} | **{lesson.course}** avec {lesson.teacher} || {lesson.classroom}") for lesson in answer]
+        logger.info("Today's schedule is shown.")
     
 
 async def setup(bot):
